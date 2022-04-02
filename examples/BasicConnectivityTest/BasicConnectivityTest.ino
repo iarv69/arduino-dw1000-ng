@@ -49,6 +49,8 @@
 
 #include <DW1000Ng.hpp>
 
+#define ESP8266
+
 // connection pins
 #if defined(ESP8266)
 const uint8_t PIN_RST = 5; // reset pin

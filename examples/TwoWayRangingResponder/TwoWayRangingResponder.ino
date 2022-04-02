@@ -56,10 +56,12 @@
 #include <DW1000NgUtils.hpp>
 #include <DW1000NgRanging.hpp>
 
+#define ESP8266
+
 // connection pins
 const uint8_t PIN_RST = 9; // reset pin
-const uint8_t PIN_IRQ = 2; // irq pin
-const uint8_t PIN_SS = SS; // spi select pin
+const uint8_t PIN_IRQ = 5; // irq pin
+const uint8_t PIN_SS = 15; // spi select pin
 
 // messages used in the ranging protocol
 // TODO replace by enum
@@ -121,12 +123,15 @@ interrupt_configuration_t DEFAULT_INTERRUPT_CONFIG = {
 };
 
 void setup() {
+    pinMode(5,INPUT);
     // DEBUG monitoring
     Serial.begin(115200);
     delay(1000);
     Serial.println(F("### DW1000Ng-arduino-ranging-anchor ###"));
     // initialize the driver
-    DW1000Ng::initialize(PIN_SS, PIN_IRQ, PIN_RST);
+    //DW1000Ng::initialize(PIN_SS, PIN_IRQ, PIN_RST);
+    //DW1000Ng::initializeNoInterrupt(PIN_SS);
+    DW1000Ng::initialize(PIN_SS, PIN_IRQ);
     Serial.println(F("DW1000Ng initialized ..."));
     // general configuration
     DW1000Ng::applyConfiguration(DEFAULT_CONFIG);
@@ -135,6 +140,14 @@ void setup() {
     DW1000Ng::setDeviceAddress(1);
 	
     DW1000Ng::setAntennaDelay(16436);
+
+    //byte eui[8];
+    //DW1000NgUtils::writeValueToBytes(eui, 0x2211111111999999, 8);
+    //DW1000Ng::setEUI(eui);
+
+    DW1000Ng::setNetworkId(0x1111);
+
+    DW1000Ng::setDeviceAddress(0x1111);
     
     Serial.println(F("Committed configuration ..."));
     // DEBUG chip info and registers pretty printed
@@ -283,4 +296,3 @@ void loop() {
         }
     }
 }
-
